@@ -1,22 +1,21 @@
-import { createClient } from '@libsql/client';
+import { createClient, type Client } from '@libsql/client';
 
-if (!process.env.TURSO_DATABASE_URL) {
-  throw new Error('TURSO_DATABASE_URL environment variable is not set');
+let turso: Client | null = null;
+
+if (process.env.TURSO_DATABASE_URL && process.env.TURSO_AUTH_TOKEN) {
+  turso = createClient({
+    url: process.env.TURSO_DATABASE_URL.trim(),
+    authToken: process.env.TURSO_AUTH_TOKEN.trim(),
+  });
 }
 
-if (!process.env.TURSO_AUTH_TOKEN) {
-  throw new Error('TURSO_AUTH_TOKEN environment variable is not set');
-}
-
-export const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL.trim(),
-  authToken: process.env.TURSO_AUTH_TOKEN.trim(),
-});
+export { turso };
 
 export async function executeQuery<T = any>(
   sql: string,
   params?: any[]
 ): Promise<T[]> {
+  if (!turso) throw new Error('Database not configured');
   const result = await turso.execute({
     sql,
     args: params || [],
@@ -35,6 +34,7 @@ export async function executeOne<T = any>(
 export async function transaction<T>(
   callback: (tx: any) => Promise<T>
 ): Promise<T> {
+  if (!turso) throw new Error('Database not configured');
   const tx = await turso.transaction('write');
   try {
     const result = await callback(tx);
