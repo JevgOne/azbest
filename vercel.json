@@ -1,0 +1,21 @@
+{
+  "regions": ["fra1"],
+  "crons": [
+    {
+      "path": "/api/cron/shoptet-sync",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/keyword-tracker",
+      "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/competitor-check",
+      "schedule": "0 8 * * 1"
+    },
+    {
+      "path": "/api/cron/report-generator",
+      "schedule": "0 7 * * 1"
+    }
+  ]
+}

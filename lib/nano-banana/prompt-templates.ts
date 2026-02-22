@@ -1,0 +1,7 @@
+export const promptTemplates = [
+  { id: 'product-hero', name: 'Produktová fotka', description: 'Hero shot produktu na čistém pozadí', template: 'Professional product photography of {product} on clean white background, studio lighting, high resolution, e-commerce style', category: 'product', variables: ['product'] },
+  { id: 'lifestyle', name: 'Lifestyle fotka', description: 'Produkt v akci', template: 'Lifestyle photography of athlete using {product} while {activity}, natural lighting, outdoor, dynamic pose, sports photography', category: 'product', variables: ['product', 'activity'] },
+  { id: 'banner-seasonal', name: 'Sezónní banner', description: 'Banner pro sezónní kampaň', template: 'Modern e-commerce banner for {season} sale, featuring {sport} equipment, clean design, {brand} brand style, Czech text "{text}"', category: 'banner', variables: ['season', 'sport', 'brand', 'text'] },
+  { id: 'social-post', name: 'Social media post', description: 'Příspěvek pro sociální sítě', template: 'Instagram-ready square image for sports brand, featuring {product}, modern minimal design, vibrant colors, {mood} mood', category: 'social', variables: ['product', 'mood'] },
+  { id: 'brand-visual', name: 'Brand vizuál', description: 'Vizuál v brand stylu', template: 'Brand visual for premium sports e-shop, {style} style, featuring {element}, professional marketing material', category: 'brand', variables: ['style', 'element'] },
+];
