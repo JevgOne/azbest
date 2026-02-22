@@ -43,8 +43,8 @@ export async function comparePassword(password: string, hash: string): Promise<b
 
 async function getDbAdminByEmail(email: string): Promise<DbAdminUser | null> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) return null;
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) return null;
     const result = await turso.execute({
       sql: 'SELECT * FROM admins WHERE email = ? AND active = 1',
       args: [email],
@@ -61,8 +61,8 @@ async function getDbAdminByEmail(email: string): Promise<DbAdminUser | null> {
 
 export async function getDbAdminById(id: string): Promise<DbAdminUser | null> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) return null;
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) return null;
     const result = await turso.execute({
       sql: 'SELECT * FROM admins WHERE id = ? AND active = 1',
       args: [id],
@@ -79,8 +79,8 @@ export async function getDbAdminById(id: string): Promise<DbAdminUser | null> {
 
 export async function getAllDbAdmins(): Promise<DbAdminUser[]> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) return [];
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) return [];
     const result = await turso.execute({
       sql: 'SELECT id, email, name, role, active, created_at FROM admins ORDER BY created_at DESC',
       args: [],
@@ -99,8 +99,8 @@ export async function createDbAdmin(
   role: UserRole = 'admin'
 ): Promise<DbAdminUser | null> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) throw new Error('Database not configured');
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) throw new Error('Database not configured');
     const id = `admin-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const passwordHash = await hashPassword(password);
     await turso.execute({
@@ -122,8 +122,8 @@ export async function updateDbAdmin(
   data: { name?: string; email?: string; password?: string; role?: UserRole; active?: boolean }
 ): Promise<boolean> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) return false;
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) return false;
     const updates: string[] = [];
     const args: any[] = [];
     if (data.name !== undefined) { updates.push('name = ?'); args.push(data.name); }
@@ -147,8 +147,8 @@ export async function updateDbAdmin(
 
 export async function deleteDbAdmin(id: string): Promise<boolean> {
   try {
-    const { turso } = await import('@/lib/turso');
-    if (!turso) return false;
+    const { isDbConfigured, turso } = await import('@/lib/turso');
+    if (!isDbConfigured()) return false;
     await turso.execute({
       sql: 'UPDATE admins SET active = 0, updated_at = unixepoch() WHERE id = ?',
       args: [id],
