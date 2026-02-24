@@ -9,13 +9,15 @@ export type ActionType =
   | 'blog_created' | 'blog_updated' | 'blog_deleted'
   | 'image_generated' | 'report_generated'
   | 'promo_code_created' | 'review_synced'
-  | 'seo_audit_run' | 'keyword_tracked';
+  | 'seo_audit_run' | 'keyword_tracked'
+  | 'ads_synced' | 'ads_sync_failed' | 'ads_roas_calculated';
 
 export type EntityType =
   | 'user' | 'settings' | 'product' | 'order' | 'customer'
   | 'campaign' | 'email' | 'push' | 'sms'
   | 'social_post' | 'blog' | 'image' | 'report'
-  | 'promo_code' | 'review' | 'seo' | 'keyword';
+  | 'promo_code' | 'review' | 'seo' | 'keyword'
+  | 'ad_sync' | 'ad_campaign';
 
 export interface ActivityLog {
   id: number;
@@ -128,4 +130,7 @@ export const ACTION_LABELS: Record<ActionType, string> = {
   review_synced: 'Synchronizoval recenze',
   seo_audit_run: 'Spustil SEO audit',
   keyword_tracked: 'Sledoval klíčové slovo',
+  ads_synced: 'Synchronizoval reklamy',
+  ads_sync_failed: 'Chyba synchronizace reklam',
+  ads_roas_calculated: 'Přepočítal ROAS',
 };

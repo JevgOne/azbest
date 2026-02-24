@@ -40,10 +40,11 @@ const navigation: NavItem[] = [
     icon: Megaphone,
     permission: "advertising",
     children: [
+      { label: "Přehled", href: "/admin/advertising" },
       { label: "Google Ads", href: "/admin/advertising/google-ads" },
       { label: "Meta Ads", href: "/admin/advertising/meta-ads" },
       { label: "Sklik", href: "/admin/advertising/sklik" },
-      { label: "Heureka & Zbo\u017E\u00ED", href: "/admin/advertising/heureka-zbozi" },
+      { label: "Heureka & Zboží", href: "/admin/advertising/heureka-zbozi" },
       { label: "Mergado", href: "/admin/advertising/mergado" },
     ],
   },

@@ -1,7 +1,7 @@
 -- Advertising platform tables
 CREATE TABLE IF NOT EXISTS ad_campaigns (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  platform TEXT NOT NULL CHECK(platform IN ('google_ads', 'meta_ads', 'sklik', 'heureka', 'zbozi')),
+  platform TEXT NOT NULL CHECK(platform IN ('google_ads', 'meta_ads', 'sklik', 'heureka', 'zbozi', 'mergado')),
   external_id TEXT NOT NULL,
   name TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'active',

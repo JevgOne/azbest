@@ -16,6 +16,14 @@
     {
       "path": "/api/cron/report-generator",
       "schedule": "0 7 * * 1"
+    },
+    {
+      "path": "/api/cron/ads-sync",
+      "schedule": "0 */6 * * *"
+    },
+    {
+      "path": "/api/cron/genviral-analytics",
+      "schedule": "0 */4 * * *"
     }
   ]
 }
