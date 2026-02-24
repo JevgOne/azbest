@@ -55,7 +55,7 @@ const navigation: NavItem[] = [
     children: [
       { label: "Google Analytics", href: "/admin/analytics/ga4" },
       { label: "Search Console", href: "/admin/analytics/search-console" },
-      { label: "Reporty", href: "/admin/analytics/reports" },
+      { label: "Zprávy", href: "/admin/analytics/reports" },
     ],
   },
   {

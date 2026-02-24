@@ -98,8 +98,8 @@ export default function ReportsPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Reporty</h1>
-            <p className="text-muted-foreground">Generování a správa marketingových reportů</p>
+            <h1 className="text-2xl font-bold">Zprávy</h1>
+            <p className="text-muted-foreground">Generování a správa marketingových zpráv</p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -108,14 +108,14 @@ export default function ReportsPage() {
               disabled={generating}
             >
               {generating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-              Týdenní report
+              Týdenní zpráva
             </Button>
             <Button
               onClick={() => handleGenerate("monthly", "last_30_days")}
               disabled={generating}
             >
               {generating ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Plus className="h-4 w-4 mr-2" />}
-              Měsíční report
+              Měsíční zpráva
             </Button>
           </div>
         </div>
@@ -124,12 +124,12 @@ export default function ReportsPage() {
         {!reports?.length ? (
           <EmptyState
             icon={FileText}
-            title="Žádné reporty"
-            description="Vygenerujte první report kliknutím na tlačítko výše. Report kombinuje data z Google Analytics a Search Console."
+            title="Žádné zprávy"
+            description="Vygenerujte první zprávu kliknutím na tlačítko výše. Zpráva kombinuje data z Google Analytics a Search Console."
             action={
               <Button onClick={() => handleGenerate("weekly", "last_7_days")} disabled={generating}>
                 <Plus className="h-4 w-4 mr-2" />
-                Generovat týdenní report
+                Generovat týdenní zprávu
               </Button>
             }
           />
@@ -137,7 +137,7 @@ export default function ReportsPage() {
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Historie reportů</CardTitle>
+                <CardTitle className="text-base">Historie zpráv</CardTitle>
                 <Button variant="ghost" size="sm" onClick={() => refetch()}>
                   <RefreshCw className="h-4 w-4" />
                 </Button>

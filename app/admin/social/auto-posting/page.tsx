@@ -118,7 +118,7 @@ const PLATFORM_LABELS: Record<string, string> = {
 const SOURCE_LABELS: Record<string, string> = {
   auto: "Automaticky",
   manual_queue: "Z fronty",
-  manual_trigger: "Manuální",
+  manual_trigger: "Manuálně",
 };
 
 // ─── Main Page ───────────────────────────────────────────────────
@@ -302,7 +302,7 @@ export default function AutoPostingPage() {
         {triggerMutation.isSuccess && (
           <div className="mb-4 p-3 bg-green-50 text-green-800 rounded-lg text-sm flex items-center gap-2">
             <CheckCircle className="h-4 w-4" />
-            Post úspěšně vytvořen: {triggerMutation.data?.productName}
+            Příspěvek úspěšně vytvořen: {triggerMutation.data?.productName}
           </div>
         )}
         {triggerMutation.isError && (
@@ -349,7 +349,7 @@ export default function AutoPostingPage() {
             </TabsTrigger>
             <TabsTrigger value="accounts" className="gap-2">
               <Instagram className="h-4 w-4" />
-              Účty & Plánování
+              Účty a plánování
             </TabsTrigger>
             <TabsTrigger value="queue" className="gap-2">
               <ListPlus className="h-4 w-4" />
@@ -453,7 +453,7 @@ export default function AutoPostingPage() {
                   </div>
                 )}
                 <p className="text-xs text-muted-foreground">
-                  Manuální fronta má vždy přednost. Produkty postnuté za posledních 30 dní jsou vyloučeny.
+                  Manuální fronta má vždy přednost. Produkty publikované za posledních 30 dní jsou vyloučeny.
                 </p>
               </CardContent>
             </Card>
@@ -468,7 +468,7 @@ export default function AutoPostingPage() {
               </CardHeader>
               <CardContent>
                 <Label htmlFor="captionPrompt" className="text-sm text-muted-foreground mb-2 block">
-                  Vlastní system prompt pro generování captionů. Nechte prázdné pro výchozí šablonu.
+                  Vlastní system prompt pro generování captionů. Ponechte prázdné pro výchozí šablonu.
                 </Label>
                 <Textarea
                   id="captionPrompt"
@@ -632,7 +632,7 @@ export default function AutoPostingPage() {
                   <EmptyState
                     icon={Package}
                     title="Fronta je prázdná"
-                    description="Přidejte produkty do fronty a budou postnuty přednostně při příštím auto-postu."
+                    description="Přidejte produkty do fronty a budou publikovány přednostně při příštím auto-postu."
                     action={
                       <Button variant="outline" size="sm" onClick={() => setShowProductPicker(true)}>
                         <Plus className="h-4 w-4 mr-1" />
@@ -740,7 +740,7 @@ export default function AutoPostingPage() {
                             <Badge
                               variant={item.status === "posted" ? "default" : "destructive"}
                             >
-                              {item.status === "posted" ? "Postnuté" : "Chyba"}
+                              {item.status === "posted" ? "Publikováno" : "Chyba"}
                             </Badge>
                             {item.errorMessage && (
                               <p className="text-xs text-red-500 mt-1">{item.errorMessage}</p>

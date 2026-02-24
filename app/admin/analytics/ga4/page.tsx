@@ -56,7 +56,7 @@ function generateGA4Insights(data: GA4Data): Insight[] {
     if (pagesPerSession < 1.5) {
       insights.push({
         type: "warning",
-        title: "Nízký engagement",
+        title: "Slabá angažovanost",
         description: `Průměrně ${pagesPerSession.toFixed(1)} stránek na session. Zvažte optimalizaci landing pages — přidejte interní odkazy a vylepšete obsah pro snížení bounce rate.`,
       });
     }
@@ -74,14 +74,14 @@ function generateGA4Insights(data: GA4Data): Insight[] {
   if (organicShare < 30 && totalTrafficSessions > 0) {
     insights.push({
       type: "tip",
-      title: "Nízký podíl organického trafficu",
-      description: `Organic tvoří pouze ${organicShare.toFixed(0)}% návštěvnosti. Investujte do SEO obsahu — blogové články, optimalizace meta tagů a budování zpětných odkazů.`,
+      title: "Nízký podíl organického provozu",
+      description: `Organické vyhledávání tvoří pouze ${organicShare.toFixed(0)}% návštěvnosti. Investujte do SEO obsahu — blogové články, optimalizace meta tagů a budování zpětných odkazů.`,
     });
   } else if (organicShare >= 50) {
     insights.push({
       type: "success",
-      title: "Silný organic traffic",
-      description: `Organic tvoří ${organicShare.toFixed(0)}% návštěvnosti. SEO strategie funguje dobře.`,
+      title: "Silný organický provoz",
+      description: `Organické vyhledávání tvoří ${organicShare.toFixed(0)}% návštěvnosti. SEO strategie funguje dobře.`,
     });
   }
 

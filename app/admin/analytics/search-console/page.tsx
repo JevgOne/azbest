@@ -60,8 +60,8 @@ function generateSCInsights(data: SCData): Insight[] {
     const examples = highImprLowCtr.slice(0, 3).map((q) => `"${q.query}"`).join(", ");
     insights.push({
       type: "warning",
-      title: "Optimalizujte meta titles",
-      description: `${highImprLowCtr.length} dotazů má vysoké impressions ale nízké CTR (pod 3%). Příklady: ${examples}. Přepište meta titles a descriptions pro lepší proklikovost.`,
+      title: "Optimalizujte meta titulky",
+      description: `${highImprLowCtr.length} dotazů má vysoké impressions ale nízké CTR (pod 3%). Příklady: ${examples}. Přepište meta titulky a popisy pro lepší proklikovost.`,
     });
   }
 
@@ -73,7 +73,7 @@ function generateSCInsights(data: SCData): Insight[] {
     const examples = lowHanging.slice(0, 3).map((q) => `"${q.query}" (poz. ${q.position.toFixed(1)})`).join(", ");
     insights.push({
       type: "tip",
-      title: "Low-hanging fruit",
+      title: "Snadné výhry",
       description: `${lowHanging.length} dotazů je na pozicích 5–15 a lze je snadno posunout do top 5. Příklady: ${examples}. Vylepšete obsah a interní prolinkování.`,
     });
   }
