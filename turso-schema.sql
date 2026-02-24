@@ -804,3 +804,47 @@ CREATE TABLE IF NOT EXISTS utm_ad_mapping (
 
 CREATE INDEX IF NOT EXISTS idx_utm_mapping_campaign ON utm_ad_mapping(campaign_id);
 CREATE INDEX IF NOT EXISTS idx_utm_mapping_source ON utm_ad_mapping(utm_source, utm_medium, utm_campaign);
+
+-- ============================================================
+-- Migration 010: Auto-Posting Tables
+-- Automatic product posting to social media via GenViral + Claude AI
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS auto_post_config (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  enabled INTEGER DEFAULT 0,
+  rules TEXT NOT NULL DEFAULT '{}',
+  account_ids TEXT NOT NULL DEFAULT '[]',
+  caption_prompt TEXT,
+  post_time TEXT DEFAULT '10:00',
+  created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+  updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE TABLE IF NOT EXISTS auto_post_queue (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL REFERENCES products(id),
+  priority INTEGER DEFAULT 0,
+  status TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'posted', 'skipped')),
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_apq_status ON auto_post_queue(status);
+CREATE INDEX IF NOT EXISTS idx_apq_priority ON auto_post_queue(priority DESC);
+
+CREATE TABLE IF NOT EXISTS auto_post_history (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL,
+  product_name TEXT,
+  social_post_id INTEGER REFERENCES social_posts(id),
+  genviral_post_id TEXT,
+  caption TEXT NOT NULL,
+  account_ids TEXT NOT NULL,
+  source TEXT DEFAULT 'auto' CHECK(source IN ('auto', 'manual_queue', 'manual_trigger')),
+  status TEXT DEFAULT 'posted' CHECK(status IN ('posted', 'failed')),
+  error_message TEXT,
+  created_at INTEGER NOT NULL DEFAULT (unixepoch())
+);
+
+CREATE INDEX IF NOT EXISTS idx_aph_product ON auto_post_history(product_id);
+CREATE INDEX IF NOT EXISTS idx_aph_created ON auto_post_history(created_at DESC);

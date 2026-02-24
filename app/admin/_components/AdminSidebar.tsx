@@ -83,6 +83,7 @@ const navigation: NavItem[] = [
     icon: PenTool,
     children: [
       { label: "Social planner", href: "/admin/social/planner" },
+      { label: "Auto-posting", href: "/admin/social/auto-posting" },
       { label: "Blog", href: "/admin/social/blog" },
       { label: "Nano Banana Pro", href: "/admin/nano-banana" },
     ],
