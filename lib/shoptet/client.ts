@@ -1,7 +1,11 @@
-const SHOPTET_API_URL = process.env.SHOPTET_API_URL || 'https://api.myshoptet.com/api';
+async function getApiUrl(): Promise<string> {
+  const { getSetting } = await import('@/lib/settings');
+  return await getSetting('SHOPTET_API_URL') || 'https://api.myshoptet.com/api';
+}
 
 async function getAccessToken(): Promise<string> {
-  const token = process.env.SHOPTET_ACCESS_TOKEN;
+  const { getSetting } = await import('@/lib/settings');
+  const token = await getSetting('SHOPTET_ACCESS_TOKEN');
   if (!token) throw new Error('SHOPTET_ACCESS_TOKEN is not configured');
   return token;
 }
@@ -12,8 +16,9 @@ export async function shoptetRequest<T>(
 ): Promise<T> {
   const { method = 'GET', body, params } = options;
   const token = await getAccessToken();
+  const apiUrl = await getApiUrl();
 
-  const url = new URL(`${SHOPTET_API_URL}${endpoint}`);
+  const url = new URL(`${apiUrl}${endpoint}`);
   if (params) {
     Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
   }

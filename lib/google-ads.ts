@@ -1,28 +1,36 @@
 import { GoogleAdsApi, Customer } from "google-ads-api";
 
-const googleAdsConfig = {
-  client_id: process.env.GOOGLE_ADS_CLIENT_ID!,
-  client_secret: process.env.GOOGLE_ADS_CLIENT_SECRET!,
-  developer_token: process.env.GOOGLE_ADS_DEVELOPER_TOKEN!,
-};
+async function getConfig() {
+  const { getSetting } = await import('@/lib/settings');
+  return {
+    client_id: (await getSetting('GOOGLE_ADS_CLIENT_ID'))!,
+    client_secret: (await getSetting('GOOGLE_ADS_CLIENT_SECRET'))!,
+    developer_token: (await getSetting('GOOGLE_ADS_DEVELOPER_TOKEN'))!,
+  };
+}
 
-export const googleAdsClient = new GoogleAdsApi(googleAdsConfig);
-
-export function getGoogleAdsCustomer(): Customer {
-  return googleAdsClient.Customer({
-    customer_id: process.env.GOOGLE_ADS_CUSTOMER_ID!,
-    refresh_token: process.env.GOOGLE_ADS_REFRESH_TOKEN!,
-    ...(process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID ? { login_customer_id: process.env.GOOGLE_ADS_LOGIN_CUSTOMER_ID } : {}),
+export async function getGoogleAdsCustomer(): Promise<Customer> {
+  const { getSetting } = await import('@/lib/settings');
+  const config = await getConfig();
+  const client = new GoogleAdsApi(config);
+  return client.Customer({
+    customer_id: (await getSetting('GOOGLE_ADS_CUSTOMER_ID'))!,
+    refresh_token: (await getSetting('GOOGLE_ADS_REFRESH_TOKEN'))!,
+    ...(await getSetting('GOOGLE_ADS_LOGIN_CUSTOMER_ID') ? { login_customer_id: (await getSetting('GOOGLE_ADS_LOGIN_CUSTOMER_ID'))! } : {}),
   });
 }
 
 export async function testGoogleAdsConnection() {
   try {
+    const { getSetting } = await import('@/lib/settings');
     const required = ['GOOGLE_ADS_CLIENT_ID', 'GOOGLE_ADS_CLIENT_SECRET', 'GOOGLE_ADS_DEVELOPER_TOKEN', 'GOOGLE_ADS_CUSTOMER_ID', 'GOOGLE_ADS_REFRESH_TOKEN'];
-    const missing = required.filter(v => !process.env[v]);
+    const missing: string[] = [];
+    for (const v of required) {
+      if (!(await getSetting(v))) missing.push(v);
+    }
     if (missing.length > 0) return { success: false, error: `Missing: ${missing.join(', ')}` };
 
-    const customer = getGoogleAdsCustomer();
+    const customer = await getGoogleAdsCustomer();
     const [response] = await customer.query(`SELECT customer.id, customer.descriptive_name, customer.currency_code FROM customer LIMIT 1`);
     return { success: true, customerInfo: response };
   } catch (error: any) {
@@ -31,7 +39,7 @@ export async function testGoogleAdsConnection() {
 }
 
 export async function getCampaignPerformance(dateRange: string = "LAST_30_DAYS") {
-  const customer = getGoogleAdsCustomer();
+  const customer = await getGoogleAdsCustomer();
   const campaigns = await customer.query(`
     SELECT campaign.id, campaign.name, campaign.status, metrics.impressions, metrics.clicks, metrics.ctr, metrics.average_cpc, metrics.cost_micros, metrics.conversions
     FROM campaign WHERE segments.date DURING ${dateRange} ORDER BY metrics.impressions DESC
@@ -45,7 +53,7 @@ export async function getCampaignPerformance(dateRange: string = "LAST_30_DAYS")
 }
 
 export async function getDailyPerformance(dateRange: string = "LAST_30_DAYS") {
-  const customer = getGoogleAdsCustomer();
+  const customer = await getGoogleAdsCustomer();
   const rows = await customer.query(`
     SELECT segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions
     FROM campaign WHERE segments.date DURING ${dateRange} ORDER BY segments.date ASC
@@ -63,7 +71,7 @@ export async function getDailyPerformance(dateRange: string = "LAST_30_DAYS") {
 }
 
 export async function getKeywordPerformance(dateRange: string = "LAST_30_DAYS") {
-  const customer = getGoogleAdsCustomer();
+  const customer = await getGoogleAdsCustomer();
   const keywords = await customer.query(`
     SELECT ad_group_criterion.keyword.text, ad_group_criterion.keyword.match_type, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions
     FROM keyword_view WHERE segments.date DURING ${dateRange} ORDER BY metrics.impressions DESC LIMIT 100

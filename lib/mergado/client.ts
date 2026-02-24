@@ -1,7 +1,8 @@
 const MERGADO_API_BASE = 'https://app.mergado.com/api2';
 
 export async function mergadoRequest<T>(endpoint: string, options: { method?: string; body?: any } = {}): Promise<T> {
-  const token = process.env.MERGADO_API_TOKEN;
+  const { getSetting } = await import('@/lib/settings');
+  const token = await getSetting('MERGADO_API_TOKEN');
   if (!token) throw new Error('MERGADO_API_TOKEN is not configured');
 
   const response = await fetch(`${MERGADO_API_BASE}${endpoint}`, {
@@ -15,7 +16,8 @@ export async function mergadoRequest<T>(endpoint: string, options: { method?: st
 }
 
 export async function getMergadoFeeds() {
-  const shopId = process.env.MERGADO_SHOP_ID;
+  const { getSetting } = await import('@/lib/settings');
+  const shopId = await getSetting('MERGADO_SHOP_ID');
   return mergadoRequest<any>(`/shops/${shopId}/feeds/`);
 }
 

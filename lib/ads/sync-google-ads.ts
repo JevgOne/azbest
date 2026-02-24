@@ -37,7 +37,7 @@ export async function syncGoogleAds(dateFrom?: string, dateTo?: string): Promise
   }
 
   // 2. Sync daily stats per campaign
-  const customer = getGoogleAdsCustomer();
+  const customer = await getGoogleAdsCustomer();
   const dailyRows = await customer.query(`
     SELECT campaign.id, segments.date, metrics.impressions, metrics.clicks, metrics.cost_micros, metrics.conversions
     FROM campaign WHERE ${gaqlRange} ORDER BY segments.date ASC

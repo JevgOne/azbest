@@ -1,7 +1,8 @@
 const HEUREKA_API_BASE = 'https://api.heureka.cz';
 
 export async function heurekaRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
-  const apiKey = process.env.HEUREKA_API_KEY;
+  const { getSetting } = await import('@/lib/settings');
+  const apiKey = await getSetting('HEUREKA_API_KEY');
   if (!apiKey) throw new Error('HEUREKA_API_KEY is not configured');
 
   const url = new URL(`${HEUREKA_API_BASE}${endpoint}`);

@@ -1,8 +1,9 @@
 const GOSMS_API_BASE = 'https://app.gosms.cz/api/v1';
 
 async function getGoSmsToken(): Promise<string> {
-  const clientId = process.env.GOSMS_CLIENT_ID;
-  const clientSecret = process.env.GOSMS_CLIENT_SECRET;
+  const { getSetting } = await import('@/lib/settings');
+  const clientId = await getSetting('GOSMS_CLIENT_ID');
+  const clientSecret = await getSetting('GOSMS_CLIENT_SECRET');
   if (!clientId || !clientSecret) throw new Error('GoSMS credentials not configured');
 
   const response = await fetch(`${GOSMS_API_BASE}/oauth/access-token`, {
@@ -17,7 +18,8 @@ async function getGoSmsToken(): Promise<string> {
 
 export async function sendSms(recipients: string[], message: string) {
   const token = await getGoSmsToken();
-  const channelId = process.env.GOSMS_CHANNEL_ID;
+  const { getSetting } = await import('@/lib/settings');
+  const channelId = await getSetting('GOSMS_CHANNEL_ID');
 
   const response = await fetch(`${GOSMS_API_BASE}/messages`, {
     method: 'POST',

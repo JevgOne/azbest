@@ -1,20 +1,28 @@
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
-const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID!;
-
-function getCredentials() {
-  if (process.env.GOOGLE_SERVICE_ACCOUNT_KEY) return JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-  throw new Error("No Google Service Account credentials found");
+async function getPropertyId(): Promise<string> {
+  const { getSetting } = await import('@/lib/settings');
+  const id = await getSetting('GA4_PROPERTY_ID');
+  if (!id) throw new Error('GA4_PROPERTY_ID is not configured');
+  return id;
 }
 
-export function getGA4Client() {
-  return new BetaAnalyticsDataClient({ credentials: getCredentials() });
+async function getCredentials() {
+  const { getSetting } = await import('@/lib/settings');
+  const key = await getSetting('GOOGLE_SERVICE_ACCOUNT_KEY');
+  if (!key) throw new Error("No Google Service Account credentials found");
+  return JSON.parse(key);
+}
+
+export async function getGA4Client() {
+  return new BetaAnalyticsDataClient({ credentials: await getCredentials() });
 }
 
 export async function getGA4Overview(startDate = "30daysAgo", endDate = "today") {
-  const client = getGA4Client();
+  const client = await getGA4Client();
+  const propertyId = await getPropertyId();
   const [response] = await client.runReport({
-    property: `properties/${GA4_PROPERTY_ID}`,
+    property: `properties/${propertyId}`,
     dateRanges: [{ startDate, endDate }],
     dimensions: [{ name: "date" }],
     metrics: [{ name: "activeUsers" }, { name: "sessions" }, { name: "screenPageViews" }, { name: "bounceRate" }, { name: "averageSessionDuration" }],
@@ -32,9 +40,10 @@ export async function getGA4Overview(startDate = "30daysAgo", endDate = "today")
 }
 
 export async function getGA4TopPages(startDate = "30daysAgo", endDate = "today", limit = 10) {
-  const client = getGA4Client();
+  const client = await getGA4Client();
+  const propertyId = await getPropertyId();
   const [response] = await client.runReport({
-    property: `properties/${GA4_PROPERTY_ID}`,
+    property: `properties/${propertyId}`,
     dateRanges: [{ startDate, endDate }],
     dimensions: [{ name: "pagePath" }, { name: "pageTitle" }],
     metrics: [{ name: "screenPageViews" }],
@@ -48,9 +57,10 @@ export async function getGA4TopPages(startDate = "30daysAgo", endDate = "today",
 }
 
 export async function getGA4TrafficSources(startDate = "30daysAgo", endDate = "today") {
-  const client = getGA4Client();
+  const client = await getGA4Client();
+  const propertyId = await getPropertyId();
   const [response] = await client.runReport({
-    property: `properties/${GA4_PROPERTY_ID}`,
+    property: `properties/${propertyId}`,
     dateRanges: [{ startDate, endDate }],
     dimensions: [{ name: "sessionDefaultChannelGroup" }],
     metrics: [{ name: "sessions" }, { name: "activeUsers" }],

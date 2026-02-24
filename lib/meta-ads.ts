@@ -1,14 +1,16 @@
 const META_API_VERSION = "v21.0";
 const META_API_BASE = `https://graph.facebook.com/${META_API_VERSION}`;
 
-function getAccessToken(): string {
-  const token = process.env.META_ACCESS_TOKEN;
+async function getAccessToken(): Promise<string> {
+  const { getSetting } = await import('@/lib/settings');
+  const token = await getSetting('META_ACCESS_TOKEN');
   if (!token) throw new Error("META_ACCESS_TOKEN is not configured");
   return token;
 }
 
-function getAdAccountId(): string {
-  const accountId = process.env.META_AD_ACCOUNT_ID;
+async function getAdAccountId(): Promise<string> {
+  const { getSetting } = await import('@/lib/settings');
+  const accountId = await getSetting('META_AD_ACCOUNT_ID');
   if (!accountId) throw new Error("META_AD_ACCOUNT_ID is not configured");
   return accountId.startsWith("act_") ? accountId : `act_${accountId}`;
 }
@@ -16,7 +18,7 @@ function getAdAccountId(): string {
 async function metaApiRequest<T>(endpoint: string, options: { method?: string; params?: Record<string, string>; body?: any } = {}): Promise<T> {
   const { method = "GET", params = {}, body } = options;
   const url = new URL(`${META_API_BASE}${endpoint}`);
-  url.searchParams.set("access_token", getAccessToken());
+  url.searchParams.set("access_token", await getAccessToken());
   if (method === "GET") Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   const response = await fetch(url.toString(), {
     method,
@@ -30,13 +32,17 @@ async function metaApiRequest<T>(endpoint: string, options: { method?: string; p
 
 export async function testMetaAdsConnection() {
   try {
-    if (!process.env.META_ACCESS_TOKEN || !process.env.META_AD_ACCOUNT_ID) {
+    const { getSetting } = await import('@/lib/settings');
+    const token = await getSetting('META_ACCESS_TOKEN');
+    const accountId = await getSetting('META_AD_ACCOUNT_ID');
+    if (!token || !accountId) {
       const missing = [];
-      if (!process.env.META_ACCESS_TOKEN) missing.push("META_ACCESS_TOKEN");
-      if (!process.env.META_AD_ACCOUNT_ID) missing.push("META_AD_ACCOUNT_ID");
+      if (!token) missing.push("META_ACCESS_TOKEN");
+      if (!accountId) missing.push("META_AD_ACCOUNT_ID");
       return { success: false, error: `Missing: ${missing.join(", ")}` };
     }
-    const info = await metaApiRequest<any>(`/${getAdAccountId()}`, { params: { fields: "id,name,account_status,currency" } });
+    const actId = accountId.startsWith("act_") ? accountId : `act_${accountId}`;
+    const info = await metaApiRequest<any>(`/${actId}`, { params: { fields: "id,name,account_status,currency" } });
     return { success: true, accountInfo: info };
   } catch (error: any) {
     return { success: false, error: error.message };
@@ -44,7 +50,8 @@ export async function testMetaAdsConnection() {
 }
 
 export async function getCampaigns() {
-  const response = await metaApiRequest<{ data: any[] }>(`/${getAdAccountId()}/campaigns`, {
+  const actId = await getAdAccountId();
+  const response = await metaApiRequest<{ data: any[] }>(`/${actId}/campaigns`, {
     params: { fields: "id,name,status,objective,daily_budget,lifetime_budget", limit: "100" },
   });
   return response.data.map((c) => ({
@@ -54,7 +61,8 @@ export async function getCampaigns() {
 }
 
 export async function getCampaignInsights(datePreset: string = "last_30d") {
-  const response = await metaApiRequest<{ data: any[] }>(`/${getAdAccountId()}/insights`, {
+  const actId = await getAdAccountId();
+  const response = await metaApiRequest<{ data: any[] }>(`/${actId}/insights`, {
     params: { level: "campaign", fields: "campaign_id,campaign_name,impressions,clicks,ctr,cpc,spend,reach", date_preset: datePreset, limit: "100" },
   });
   return response.data.map((i) => ({
@@ -66,7 +74,8 @@ export async function getCampaignInsights(datePreset: string = "last_30d") {
 }
 
 export async function getAdSets(campaignId?: string) {
-  const endpoint = campaignId ? `/${campaignId}/adsets` : `/${getAdAccountId()}/adsets`;
+  const actId = await getAdAccountId();
+  const endpoint = campaignId ? `/${campaignId}/adsets` : `/${actId}/adsets`;
   const response = await metaApiRequest<{ data: any[] }>(endpoint, {
     params: { fields: "id,name,status,campaign_id,daily_budget,targeting", limit: "100" },
   });

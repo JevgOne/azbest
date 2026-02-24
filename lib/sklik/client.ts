@@ -1,7 +1,8 @@
 const SKLIK_API_URL = 'https://api.sklik.cz/drak/json/';
 
 export async function sklikRequest(method: string, params: any = {}) {
-  const token = process.env.SKLIK_API_TOKEN;
+  const { getSetting } = await import('@/lib/settings');
+  const token = await getSetting('SKLIK_API_TOKEN');
   if (!token) throw new Error('SKLIK_API_TOKEN is not configured');
 
   const response = await fetch(`${SKLIK_API_URL}${method}`, {
@@ -16,8 +17,10 @@ export async function sklikRequest(method: string, params: any = {}) {
 }
 
 export async function getSklikCampaigns() {
+  const { getSetting } = await import('@/lib/settings');
+  const userId = await getSetting('SKLIK_USER_ID');
   const data = await sklikRequest('campaigns.list', {
-    userId: parseInt(process.env.SKLIK_USER_ID || '0'),
+    userId: parseInt(userId || '0'),
   });
   return data.campaigns || [];
 }

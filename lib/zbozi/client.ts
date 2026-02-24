@@ -1,7 +1,8 @@
 const ZBOZI_API_BASE = 'https://api.zbozi.cz';
 
 export async function zboziRequest<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
-  const apiKey = process.env.ZBOZI_API_KEY;
+  const { getSetting } = await import('@/lib/settings');
+  const apiKey = await getSetting('ZBOZI_API_KEY');
   if (!apiKey) throw new Error('ZBOZI_API_KEY is not configured');
 
   const url = new URL(`${ZBOZI_API_BASE}${endpoint}`);
