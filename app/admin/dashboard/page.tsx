@@ -33,14 +33,31 @@ interface DashboardStats {
 }
 
 const ACTION_LABELS: Record<string, string> = {
+  user_created: "Vytvořen uživatel",
+  user_updated: "Upraven uživatel",
+  user_deleted: "Smazán uživatel",
   user_login: "Přihlášení",
+  user_logout: "Odhlášení",
   settings_updated: "Nastavení změněno",
+  password_changed: "Heslo změněno",
   shoptet_sync: "Synchronizace Shoptet",
+  product_updated: "Produkt aktualizován",
+  order_updated: "Objednávka aktualizována",
   social_post_created: "Příspěvek vytvořen",
+  social_post_scheduled: "Příspěvek naplánován",
   social_post_published: "Příspěvek publikován",
+  social_post_retried: "Příspěvek zopakován",
   social_analytics_synced: "Analytika synchronizována",
   ads_synced: "Reklamy synchronizovány",
+  ads_sync_failed: "Chyba synchronizace reklam",
+  ads_roas_calculated: "ROAS přepočítán",
   keyword_tracked: "Klíčové slovo sledováno",
+  seo_audit_run: "SEO audit spuštěn",
+  blog_created: "Článek vytvořen",
+  blog_updated: "Článek upraven",
+  promo_code_created: "Promo kód vytvořen",
+  review_synced: "Recenze synchronizovány",
+  report_generated: "Zpráva vygenerována",
 };
 
 function formatCurrency(value: number): string {
@@ -160,10 +177,13 @@ export default function DashboardPage() {
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium truncate">
                           {ACTION_LABELS[log.action] || log.action}
+                          {log.entity_name && (
+                            <span className="font-normal text-muted-foreground"> — {log.entity_name}</span>
+                          )}
                         </p>
                         <p className="text-xs text-muted-foreground truncate">
-                          {log.details || log.entity_name || "—"}
-                          {log.user_name && ` · ${log.user_name}`}
+                          {log.user_name || "Systém"}
+                          {log.details && ` · ${log.details}`}
                         </p>
                       </div>
                       <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
