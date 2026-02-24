@@ -1,6 +1,6 @@
 export interface SocialPost {
   id: number;
-  platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'tiktok';
+  platform: 'facebook' | 'instagram' | 'twitter' | 'linkedin' | 'tiktok' | 'pinterest' | 'youtube';
   type: 'post' | 'story' | 'reel' | 'carousel';
   content: string;
   media_urls: string[];

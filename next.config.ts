@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.shoptet.cz' },
       { protocol: 'https', hostname: '*.qsport.cz' },
       { protocol: 'https', hostname: 'cdn.myshoptet.com' },
+      { protocol: 'https', hostname: '*.genviral.io' },
     ],
   },
   experimental: {

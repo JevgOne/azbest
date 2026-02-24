@@ -5,7 +5,7 @@ export type ActionType =
   | 'shoptet_sync' | 'product_updated' | 'order_updated'
   | 'campaign_created' | 'campaign_updated' | 'campaign_paused'
   | 'email_sent' | 'push_sent' | 'sms_sent'
-  | 'social_post_created' | 'social_post_scheduled'
+  | 'social_post_created' | 'social_post_scheduled' | 'social_post_published' | 'social_post_retried' | 'social_analytics_synced'
   | 'blog_created' | 'blog_updated' | 'blog_deleted'
   | 'image_generated' | 'report_generated'
   | 'promo_code_created' | 'review_synced'
@@ -116,6 +116,9 @@ export const ACTION_LABELS: Record<ActionType, string> = {
   sms_sent: 'Odeslal SMS',
   social_post_created: 'Vytvořil příspěvek',
   social_post_scheduled: 'Naplánoval příspěvek',
+  social_post_published: 'Publikoval příspěvek',
+  social_post_retried: 'Opakoval příspěvek',
+  social_analytics_synced: 'Synchronizoval analytiku',
   blog_created: 'Vytvořil článek',
   blog_updated: 'Upravil článek',
   blog_deleted: 'Smazal článek',
