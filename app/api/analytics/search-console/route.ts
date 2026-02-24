@@ -7,7 +7,7 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const siteUrl = searchParams.get('siteUrl') || process.env.SEARCH_CONSOLE_SITE_URL || 'https://www.qsport.cz';
+    const siteUrl = searchParams.get('siteUrl') || process.env.SEARCH_CONSOLE_SITE_URL || 'sc-domain:qsport.cz';
     const startDate = searchParams.get('startDate') || new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     const endDate = searchParams.get('endDate') || new Date().toISOString().split('T')[0];
 
