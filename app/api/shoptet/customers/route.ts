@@ -10,9 +10,29 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit') || '50');
     const offset = parseInt(searchParams.get('offset') || '0');
+    const segment = searchParams.get('segment');
+    const search = searchParams.get('search');
 
-    const result = await turso.execute({ sql: 'SELECT * FROM customers ORDER BY updated_at DESC LIMIT ? OFFSET ?', args: [limit, offset] });
-    const countResult = await turso.execute({ sql: 'SELECT COUNT(*) as count FROM customers', args: [] });
+    let sql = 'SELECT * FROM customers';
+    let countSql = 'SELECT COUNT(*) as count FROM customers';
+    const conditions: string[] = [];
+    const args: any[] = [];
+
+    if (segment) { conditions.push('rfm_segment = ?'); args.push(segment); }
+    if (search) { conditions.push('(name LIKE ? OR email LIKE ?)'); args.push(`%${search}%`, `%${search}%`); }
+
+    if (conditions.length > 0) {
+      const whereClause = ' WHERE ' + conditions.join(' AND ');
+      sql += whereClause;
+      countSql += whereClause;
+    }
+
+    sql += ' ORDER BY updated_at DESC LIMIT ? OFFSET ?';
+    const countArgs = [...args];
+    args.push(limit, offset);
+
+    const result = await turso.execute({ sql, args });
+    const countResult = await turso.execute({ sql: countSql, args: countArgs });
 
     return NextResponse.json({ success: true, data: { customers: result.rows, total: (countResult.rows[0] as any)?.count || 0 } });
   } catch (error) {
